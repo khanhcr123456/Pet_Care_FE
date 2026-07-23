@@ -456,28 +456,7 @@ export default function FirebaseAnalytics() {
                         </div>
                     </div>
 
-                    <div className="mt-6">
-                        {/* Event breakdown */}
-                        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                            <div className="px-6 py-5 border-b border-slate-100 bg-gradient-to-r from-blue-50 to-white">
-                                <h3 className="text-sm font-semibold text-blue-800">Sự kiện tương tác (Events)</h3>
-                                <p className="text-xs text-blue-500 mt-1">Các hành vi sự kiện nổi bật của người dùng trên ứng dụng</p>
-                            </div>
-                            <ul className="divide-y divide-slate-50 max-h-80 overflow-y-auto">
-                                {data.eventscount?.map((evt: any, i: number) => (
-                                    <li key={i} className="px-6 py-4 flex justify-between items-center hover:bg-blue-50/50 transition-colors">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-blue-100 flex justify-center items-center text-blue-600 text-xs font-bold">
-                                                {i + 1}
-                                            </div>
-                                            <span className="font-medium text-sm text-slate-700">{evt.name}</span>
-                                        </div>
-                                        <span className="text-sm font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded-full">{formatNumber(evt.count)}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
+
                 </div>
             )}
         </div>

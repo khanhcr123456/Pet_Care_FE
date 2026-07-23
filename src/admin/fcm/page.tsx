@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fetchFcmReport, sendBroadcastNotification, memCache } from '../../service/api_request';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 type FcmTotals = {
     sends: number;
@@ -209,6 +210,52 @@ export default function FcmReport() {
                         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                             <p className="text-sm font-medium text-slate-500">Đã mở (Opened)</p>
                             <p className="mt-2 text-3xl font-semibold text-slate-900">{totals?.openCount}</p>
+                        </div>
+                    </div>
+
+                    {/* Chart Visualization */}
+                    <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden mb-6 p-6">
+                        <div className="mb-6">
+                            <h2 className="text-lg font-semibold text-slate-900 border-b border-dashed border-slate-300 pb-2 inline-block">
+                                Thống kê hiệu suất Push Notification
+                            </h2>
+                        </div>
+                        <div className="h-[350px] w-full">
+                            {chartData.filter(d => d.sends > 0 || d.received > 0 || d.impressions > 0 || d.openCount > 0).length === 0 ? (
+                                <div className="h-full flex items-center justify-center text-slate-400 italic">Chưa có đủ dữ liệu để vẽ biểu đồ</div>
+                            ) : (
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <LineChart data={chartData.filter(d => d.sends > 0 || d.received > 0 || d.impressions > 0 || d.openCount > 0).slice().reverse()} margin={{ top: 10, right: 30, bottom: 20, left: 0 }}>
+                                        <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#f1f5f9" />
+                                        <XAxis
+                                            dataKey="date"
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fill: '#64748B', fontSize: 12, fontWeight: 500 }}
+                                            tickMargin={15}
+                                            tickFormatter={(val) => {
+                                                if (!val) return '';
+                                                const parts = val.split('-');
+                                                if (parts.length === 3) return `${parts[2]}/${parts[1]}`;
+                                                return val;
+                                            }}
+                                        />
+                                        <YAxis
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fill: '#64748B', fontSize: 12 }}
+                                            tickMargin={10}
+                                        />
+                                        <Tooltip
+                                            contentStyle={{ borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)', padding: '12px 16px' }}
+                                            labelStyle={{ fontWeight: 'bold', color: '#0f172a', marginBottom: '8px' }}
+                                        />
+                                        <Line type="monotone" name="Đã Gửi" dataKey="sends" stroke="#ec4899" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                                        <Line type="monotone" name="Hiển thị" dataKey="impressions" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                                        <Line type="monotone" name="Lượt Mở" dataKey="openCount" stroke="#10b981" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            )}
                         </div>
                     </div>
 
