@@ -19,3 +19,49 @@ body {
   margin: 0;
   min-height: 100vh;
 }
+
+:root {
+  --sidebar-bg: #111827;
+  --logo-bg: #FFD700;
+  --app-bg: #f8fafc;
+  --paw-color: #FFD700;
+}
+
+body.theme-NOEL {
+  --sidebar-bg: #166534;
+  /* green-800 */
+  --logo-bg: #ffffff;
+  --app-bg: #fdfbf7;
+  --paw-color: #dc2626;
+  /* red-600 */
+}
+
+body.theme-NOEL * {
+  border-color: rgba(22, 101, 52, 0.1);
+}
+
+body.theme-TET {
+  --sidebar-bg: #be123c;
+  /* rose-700 */
+  --logo-bg: #facc15;
+  /* yellow-400 */
+  --app-bg: #fff1f2;
+  --paw-color: #fca5a5;
+}
+
+body.theme-TET * {
+  border-color: rgba(190, 18, 60, 0.1);
+}
+
+body.theme-HALLOWEEN {
+  --sidebar-bg: #09090b;
+  /* zinc-950 */
+  --logo-bg: #ea580c;
+  /* orange-600 */
+  --app-bg: #fff7ed;
+  --paw-color: #ea580c;
+}
+
+body.theme-HALLOWEEN * {
+  border-color: rgba(234, 88, 12, 0.1);
+}

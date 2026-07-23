@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchFcmReport, sendBroadcastNotification, memCache } from './service/api_request';
+import { fetchFcmReport, sendBroadcastNotification, memCache } from '../../service/api_request';
 
 type FcmTotals = {
     sends: number;
@@ -87,60 +87,92 @@ export default function FcmReport() {
 
     return (
         <div className="space-y-6">
-            <div className="flex gap-4">
-                <button
-                    onClick={fetchReport}
-                    className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-colors">
-                    Làm mới báo cáo
-                </button>
+            <div className="flex justify-end mb-2">
                 <button
                     onClick={() => setShowNotifForm(!showNotifForm)}
-                    className="rounded-xl border border-transparent bg-cyan-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-700 transition-colors">
-                    {showNotifForm ? 'Đóng gửi thông báo' : 'Gửi thông báo hàng loạt (Broadcast)'}
+                    className={`relative overflow-hidden rounded-2xl px-6 py-3 text-sm font-bold shadow-lg transition-all duration-300 flex items-center gap-2
+                        ${showNotifForm
+                        }`}
+                >
+                    {showNotifForm ? (
+                        <><span>✕</span> Ẩn bảng điều khiển</>
+                    ) : (
+                        <><span>📢</span> Tạo chiến dịch thông báo</>
+                    )}
                 </button>
             </div>
 
             {showNotifForm && (
-                <div className="rounded-3xl border border-cyan-200 bg-cyan-50 p-6 shadow-sm">
-                    <h3 className="text-lg font-bold text-cyan-900 mb-4">Gửi thông báo đẩy đến tất cả ngưởi dùng</h3>
+                <div className="rounded-[2rem] border border-white bg-white/70 backdrop-blur-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-8 transition-all relative overflow-hidden ring-1 ring-slate-900/5">
+                    {/* Background blob decoration */}
+                    <div className="absolute -right-20 -top-20 w-80 h-80 bg-cyan-400/20 rounded-full blur-3xl pointer-events-none"></div>
+                    <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl pointer-events-none"></div>
 
-                    {notifResult && (
-                        <div className={`mb-4 p-4 rounded-xl border text-sm ${notifResult.success ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-rose-50 text-rose-800 border-rose-200'}`}>
-                            {notifResult.message}
+                    <div className="relative z-10 flex flex-col md:flex-row gap-10">
+                        {/* Left Side: Info */}
+                        <div className="md:w-1/3 flex flex-col justify-center">
+                            <div className="w-16 h-16 bg-gradient-to-br from-cyan-100 to-blue-50 text-cyan-600 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm border border-cyan-100">
+                                🚀
+                            </div>
+                            <h3 className="text-2xl font-bold text-slate-800 tracking-tight">Kích hoạt chiến dịch</h3>
+                            <p className="text-slate-500 mt-3 text-sm leading-relaxed font-medium">
+                                Gửi thông báo đẩy (Push Notification) đồng loạt thẳng đến màn hình điện thoại của toàn bộ người dùng Ứng dụng. Rất thích hợp để nhắc nhở sự kiện, giảm giá hoặc tin tức khẩn cấp.
+                            </p>
                         </div>
-                    )}
 
-                    <form onSubmit={handleSendBroadcast} className="space-y-4 max-w-xl">
-                        <div>
-                            <label className="block text-sm font-semibold text-cyan-900 mb-1">Tiêu đề thông báo</label>
-                            <input
-                                type="text"
-                                required
-                                value={notifTitle}
-                                onChange={e => setNotifTitle(e.target.value)}
-                                placeholder="Khuyến mãi đặc biệt hôm nay!"
-                                className="w-full px-4 py-2 rounded-xl border border-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                            />
+                        {/* Right Side: Form */}
+                        <div className="md:w-2/3 bg-white p-7 rounded-3xl border border-slate-100 shadow-[0_2px_15px_rgb(0,0,0,0.03)]">
+                            {notifResult && (
+                                <div className={`mb-6 p-4 rounded-xl border text-sm flex items-start gap-3 font-medium ${notifResult.success ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-rose-50 text-rose-800 border-rose-200'}`}>
+                                    <span className="text-xl mt-0.5">{notifResult.success ? '✅' : '⚠️'}</span>
+                                    <span>{notifResult.message}</span>
+                                </div>
+                            )}
+
+                            <form onSubmit={handleSendBroadcast} className="space-y-5">
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 mb-1.5">Tiêu đề thông báo</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={notifTitle}
+                                        onChange={e => setNotifTitle(e.target.value)}
+                                        placeholder="Ví dụ: 🔥 Siêu giảm giá 50% hôm nay!"
+                                        className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500 transition-all font-medium text-slate-800 placeholder:text-slate-400"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 mb-1.5">Nội dung chi tiết</label>
+                                    <textarea
+                                        required
+                                        value={notifBody}
+                                        onChange={e => setNotifBody(e.target.value)}
+                                        rows={3}
+                                        placeholder="Nội dung sẽ hiện trên thanh thông báo điện thoại..."
+                                        className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500 transition-all font-medium text-slate-800 placeholder:text-slate-400 resize-none"
+                                    />
+                                </div>
+                                <div className="pt-2">
+                                    <button
+                                        type="submit"
+                                        disabled={notifLoading}
+                                        className="w-full rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 px-6 py-4 text-sm font-bold text-white shadow-lg hover:shadow-cyan-500/40 disabled:opacity-70 transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+                                    >
+                                        {notifLoading ? (
+                                            <>
+                                                <div className="w-5 h-5 border-[3px] border-white/30 border-t-white rounded-full animate-spin"></div>
+                                                Đang kết nối Server...
+                                            </>
+                                        ) : (
+                                            <>
+                                                Phát Sóng Ngay (Broadcast) 📡
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                        <div>
-                            <label className="block text-sm font-semibold text-cyan-900 mb-1">Nội dung</label>
-                            <textarea
-                                required
-                                value={notifBody}
-                                onChange={e => setNotifBody(e.target.value)}
-                                rows={3}
-                                placeholder="Giảm giá 50% tất cả các dịch vụ Spa cho thú cưng..."
-                                className="w-full px-4 py-2 rounded-xl border border-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                            />
-                        </div>
-                        <button
-                            type="submit"
-                            disabled={notifLoading}
-                            className="rounded-xl bg-cyan-600 px-6 py-2.5 text-sm font-bold text-white hover:bg-cyan-700 disabled:opacity-50 transition-colors"
-                        >
-                            {notifLoading ? 'Đang gửi thông báo...' : 'Phát sóng ngay 🚀'}
-                        </button>
-                    </form>
+                    </div>
                 </div>
             )}
 

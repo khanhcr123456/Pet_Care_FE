@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchFirebaseUsers, toggleUserStatus, deleteFirebaseUser, memCache } from './service/api_request';
+import { fetchFirebaseUsers, toggleUserStatus, deleteFirebaseUser, memCache } from '../../service/api_request';
 
 type FirebaseAuthUser = {
     uid: string;
@@ -75,19 +75,6 @@ export default function AuthUsers() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
-                <div className="text-sm text-slate-700">
-                    Danh sách này phản ánh trực tiếp dữ liệu đang lưu trong Google Firebase Authentication.
-                </div>
-                <div className="flex gap-2">
-                    <button
-                        onClick={fetchUsers}
-                        className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50">
-                        Làm mới danh sách
-                    </button>
-                </div>
-            </div>
-
             {loading ? (
                 <div className="space-y-4">
                     <div className="h-16 w-full rounded-2xl bg-slate-200 animate-pulse"></div>
